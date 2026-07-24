@@ -1,30 +1,19 @@
-const usuarios = require('../data/usuarios');
+const usuariosController = require('../controllers/usuariosController');
 
-//receber requisições POST na url /usuarios em chunk e printar quando finalizado.. transformar json recebido em objeto javascript
+//função principal de busca de rotas
 function usuariosRoute(req, res) {
+  //receber requisições GET na url /usuarios e chamar função listarUsuarios
   if (req.method === 'GET' && req.url === '/usuarios') {
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(usuarios));
+    usuariosController.listarUsuarios(req, res);
     return true;
   }
+
+  //receber requisições POST na url /usuarios e chamar função criarUsuario
   if (req.method === 'POST' && req.url === '/usuarios') {
-    let body = '';
-
-    req.on('data', (chunk) => {
-      body += chunk;
-    });
-
-    req.on('end', () => {
-      const usuario = JSON.parse(body);
-
-      usuarios.push(usuario);
-
-      res.statusCode = 201;
-      res.setHeader('Content-type', 'application/json');
-      res.end(JSON.stringify(usuario));
-    });
+    usuariosController.criarUsuario(req, res);
+    return true;
   }
-  return true;
+  return false;
 }
 
 module.exports = usuariosRoute;
